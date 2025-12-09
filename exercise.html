@@ -1,0 +1,445 @@
+                   <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personalized Fitness Planner</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-blue': '#10b981', // Emerald Green for a healthy look
+                        'secondary-gray': '#f3f4f6',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom styles for better aesthetics */
+        body {
+            background-color: #f7fafc;
+        }
+        .card-shadow {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .view-transition {
+            transition: opacity 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="font-sans min-h-screen p-4 md:p-8 flex items-center justify-center">
+
+    <div class="max-w-4xl w-full bg-white rounded-xl card-shadow overflow-hidden">
+        
+        <!-- Header - UPDATED to include Diet Plan button -->
+        <header class="p-6 bg-primary-blue text-white rounded-t-xl flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-extrabold tracking-tight">Your Fitness Journey Begins</h1>
+                <p class="mt-1 text-sm opacity-90">Enter your details to generate a personalized workout plan.</p>
+            </div>
+            <!-- Diet Plan Button -->
+            <a href="mydiet.html" class="bg-white text-primary-blue font-bold px-4 py-2 rounded-lg shadow-md hover:bg-gray-100 transition duration-150 ease-in-out whitespace-nowrap text-sm">
+                Diet Plan
+            </a>
+        </header>
+
+        <main class="p-6 md:p-8">
+            
+            <!-- Main Form and Workout List View (Visible initially) -->
+            <div id="mainFormView" class="view-transition grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <!-- Input Form Section (2/3 width on large screens) -->
+                <section class="lg:col-span-2">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Personal Assessment</h2>
+                    <form id="fitnessForm" class="space-y-4">
+                        
+                        <!-- Row 1: Age & Gender -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label for="age" class="block text-sm font-medium text-gray-700">Age (Years)</label>
+                                <input type="number" id="age" name="age" required min="10" max="100" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-blue focus:ring-primary-blue p-2.5">
+                            </div>
+                            <div>
+                                <label for="gender" class="block text-sm font-medium text-gray-700">Gender</label>
+                                <select id="gender" name="gender" required class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-blue focus:ring-primary-blue p-2.5">
+                                    <option value="" disabled selected>Select Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Row 2: Weight & Height -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label for="weight" class="block text-sm font-medium text-gray-700">Weight (kg)</label>
+                                <input type="number" id="weight" name="weight" required min="30" max="300" step="0.1" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-blue focus:ring-primary-blue p-2.5">
+                            </div>
+                            <div>
+                                <label for="height" class="block text-sm font-medium text-gray-700">Height (cm)</label>
+                                <input type="number" id="height" name="height" required min="100" max="250" step="1" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-blue focus:ring-primary-blue p-2.5">
+                            </div>
+                        </div>
+
+                        <!-- Row 3: Fitness Goal -->
+                        <div>
+                            <label for="goal" class="block text-sm font-medium text-gray-700">Primary Fitness Goal</label>
+                            <select id="goal" name="goal" required class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-blue focus:ring-primary-blue p-2.5">
+                                <option value="" disabled selected>Select Your Goal</option>
+                                <option value="weightLoss">Weight Loss</option>
+                                <option value="muscleBuilding">Muscle Building</option>
+                                <option value="improvingFlexibility">Improving Flexibility</option>
+                                <option value="improvingStamina">Improving Stamina</option>
+                                <option value="improvingPosture">Improving Posture</option>
+                                <option value="improvingHeartHealth">Improving Heart Health</option>
+                                <option value="weightGain">Weight Gain / Mass</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="w-full sm:w-auto mt-6 px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-primary-blue hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-blue transition duration-150 ease-in-out">
+                            Generate Daily Workout
+                        </button>
+                    </form>
+
+                    <!-- Message Box for Custom Alerts/Errors -->
+                    <div id="messageBox" class="mt-4 hidden p-3 rounded-lg text-sm font-medium" role="alert"></div>
+                </section>
+
+                <!-- Workout Output Section (1/3 width on large screens) -->
+                <section class="lg:col-span-1 bg-secondary-gray p-6 rounded-xl">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">Your Daily Plan</h2>
+                    <div id="workoutOutput" class="space-y-4">
+                        <p class="text-gray-500 italic">Fill out the form and click "Generate" to see your personalized workout.</p>
+                    </div>
+                </section>
+
+            </div>
+            
+            <!-- Exercise Details View (Initially Hidden) -->
+            <div id="detailsView" class="view-transition hidden lg:col-span-3">
+                <button onclick="showListView()" class="mb-4 inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-blue transition">
+                    <!-- Icon for back button -->
+                    <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    Back to Workout Plan
+                </button>
+                
+                <h2 id="detailTitle" class="text-3xl font-extrabold text-gray-800 mb-4 border-b pb-2">Exercise: [Name]</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Placeholder Image/Icon Section -->
+                    <div class="bg-secondary-gray p-6 rounded-xl flex flex-col items-center justify-center">
+                        <div id="detailImage" class="h-32 w-32 flex items-center justify-center mb-4 rounded-full bg-white border-4 border-primary-blue/50">
+                            <!-- SVG Placeholder will be injected here -->
+                        </div>
+                        <p class="text-sm text-gray-600 italic text-center">Visual Aid Placeholder (Representation of movement type)</p>
+                    </div>
+
+                    <!-- Step-by-Step Instructions Section -->
+                    <div class="space-y-4">
+                        <h3 class="text-xl font-semibold text-gray-800">Step-by-Step Guide</h3>
+                        <ol id="detailSteps" class="space-y-3 list-decimal list-inside text-gray-700">
+                            <!-- Steps will be injected here -->
+                        </ol>
+                        <div id="detailType" class="mt-4 p-3 bg-primary-blue/10 text-primary-blue rounded-lg font-medium text-sm">Type: [Type]</div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // --- DATA STRUCTURES ---
+
+        // Pre-designed step-by-step instructions for specific exercises.
+        const exerciseDetails = {
+            "Jumping Jacks": {
+                type: "Cardio",
+                image: `<svg class="w-20 h-20 text-primary-blue mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>`,
+                steps: [
+                    "Start standing with your feet together and hands at your sides.",
+                    "In one swift motion, jump your feet out to the sides while raising your arms overhead until they nearly touch.",
+                    "Immediately jump back to the starting position, bringing your feet together and arms back to your sides.",
+                    "Maintain a steady, quick pace for the duration of the set. Focus on soft landings."
+                ]
+            },
+            "Bodyweight Squats": {
+                type: "Strength / Lower Body",
+                image: `<svg class="w-20 h-20 text-primary-blue mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.866-3.582 7-8 7S4 14.866 4 11V7h16v4c0 3.866-3.582 7-8 7S12 14.866 12 11zM12 4a3 3 0 100 6 3 3 0 000-6z"></path></svg>`,
+                steps: [
+                    "Stand with your feet shoulder-width apart, chest up, and core tight.",
+                    "Lower your hips as if sitting back in a chair, keeping your back straight and knees tracking over your toes.",
+                    "Descend until your thighs are parallel to the floor (or as deep as comfortable). Keep your weight in your heels.",
+                    "Drive through your heels to return to the starting position, squeezing your glutes at the top."
+                ]
+            },
+            "Plank": {
+                type: "Core / Stabilizer",
+                image: `<svg class="w-20 h-20 text-primary-blue mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l-2 2M15 19V6l2 2M12 4v16"></path></svg>`,
+                steps: [
+                    "Start in a push-up position, then drop down onto your forearms, keeping elbows directly beneath shoulders.",
+                    "Maintain a straight line from your head to your heels; do not let your hips sag or rise too high.",
+                    "Engage your abdominal muscles and squeeze your glutes tightly.",
+                    "Hold this position for the specified duration, focusing on deep, steady breathing and avoiding any arch in the lower back."
+                ]
+            },
+            "Spinal Twist (Supine)": {
+                type: "Flexibility / Mobility",
+                image: `<svg class="w-20 h-20 text-primary-blue mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>`,
+                steps: [
+                    "Lie flat on your back and extend your arms out to the sides in a 'T' shape.",
+                    "Bend your knees and bring your legs up to a 90-degree angle (feet off the floor).",
+                    "Slowly lower your knees to one side, keeping your shoulders pressed flat to the floor.",
+                    "Turn your head to look in the opposite direction of your knees. Hold for 30 seconds, then repeat on the other side."
+                ]
+            }
+            // Add more exercises here as needed
+        };
+
+        const workoutPlans = {
+            weightLoss: {
+                title: "Weight Loss Circuit (High Intensity)",
+                description: "Focus on full-body movements and high-intensity interval training (HIIT) to maximize calorie burn. Perform each circuit 3 times.",
+                exercises: [
+                    { name: "Jumping Jacks", sets: "3", reps: "60 seconds" },
+                    { name: "Bodyweight Squats", sets: "3", reps: "15 reps" },
+                    { name: "Push-ups (or Knee Push-ups)", sets: "3", reps: "Max reps" },
+                    { name: "Mountain Climbers", sets: "3", reps: "45 seconds" },
+                    { name: "Plank", sets: "3", reps: "60 seconds hold" },
+                ]
+            },
+            muscleBuilding: {
+                title: "Muscle Hypertrophy (Strength Focus)",
+                description: "Focus on compound lifts with progressive overload. Rest 60-90 seconds between sets. This is a Chest & Triceps day.",
+                exercises: [
+                    { name: "Bench Press (or Dumbbell Press)", sets: "4", reps: "8-12 reps" },
+                    { name: "Incline Push-ups", sets: "3", reps: "12-15 reps" },
+                    { name: "Dumbbell Flys", sets: "3", reps: "15 reps" },
+                    { name: "Triceps Skullcrushers", sets: "3", reps: "10-12 reps" },
+                    { name: "Overhead Triceps Extension", sets: "3", reps: "12 reps" },
+                ]
+            },
+            improvingFlexibility: {
+                title: "Full-Body Mobility & Flexibility",
+                description: "Focus on static and dynamic stretching. Hold each stretch for 30 seconds unless otherwise noted. Perform 2 rounds.",
+                exercises: [
+                    { name: "Downward-Facing Dog", sets: "2", reps: "60 seconds hold" },
+                    { name: "Seated Forward Fold", sets: "2", reps: "45 seconds hold" },
+                    { name: "Spinal Twist (Supine)", sets: "2", reps: "30 seconds per side" },
+                    { name: "Hip Flexor Stretch (Lunge Position)", sets: "2", reps: "30 seconds per side" },
+                    { name: "Shoulder Cross-Body Stretch", sets: "2", reps: "30 seconds per arm" },
+                ]
+            },
+            improvingStamina: {
+                title: "Cardio Endurance & Stamina Boost",
+                description: "High-intensity work followed by low-intensity rest (Tabata style). Complete 4 cycles of 8 rounds.",
+                exercises: [
+                    { name: "High Knees", sets: "8 rounds", reps: "20s work / 10s rest" },
+                    { name: "Burpees", sets: "8 rounds", reps: "20s work / 10s rest" },
+                    { name: "Jump Squats", sets: "8 rounds", reps: "20s work / 10s rest" },
+                    { name: "Sprints (On the spot)", sets: "8 rounds", reps: "20s work / 10s rest" },
+                ]
+            },
+            improvingPosture: {
+                title: "Core and Back Strengthening",
+                description: "Exercises designed to strengthen the core stabilizers and upper back muscles for better posture. Complete 3 sets of each.",
+                exercises: [
+                    { name: "Plank", sets: "3", reps: "60-90 seconds hold" },
+                    { name: "Bird-Dog", sets: "3", reps: "10-12 reps per side" },
+                    { name: "Cobra Stretch (Back Extension)", sets: "3", reps: "15 reps" },
+                    { name: "Wall Angels", sets: "3", reps: "15 reps" },
+                    { name: "Glute Bridges", sets: "3", reps: "15 reps" },
+                ]
+            },
+            improvingHeartHealth: {
+                title: "Aerobic Fitness and Cardiovascular Health",
+                description: "Sustained, low-to-moderate intensity aerobic activity to strengthen the cardiovascular system. Aim for 30 minutes minimum.",
+                exercises: [
+                    { name: "Brisk Walk or Light Jog", sets: "1", reps: "30-45 minutes" },
+                    { name: "Cycling (Stationary or Outdoor)", sets: "1", reps: "30 minutes" },
+                    { name: "Elliptical or Stair Climber", sets: "1", reps: "20-30 minutes" },
+                    { name: "Cool-down and Stretching", sets: "1", reps: "5 minutes" },
+                ]
+            },
+            weightGain: {
+                title: "Mass and Strength Building (Caloric Surplus Focus)",
+                description: "High volume, moderate intensity training focused on compound movements to promote mass gain. Rest 60 seconds between sets.",
+                exercises: [
+                    { name: "Barbell Squats", sets: "4", reps: "6-10 reps" },
+                    { name: "Deadlifts (Light Weight Focus)", sets: "3", reps: "8 reps" },
+                    { name: "Overhead Press", sets: "3", reps: "10-12 reps" },
+                    { name: "Pull-ups (or Lat Pulldowns)", sets: "3", reps: "8-12 reps" },
+                    { name: "Bicep Curls", sets: "3", reps: "12 reps" },
+                ]
+            },
+        };
+
+        // --- DOM REFERENCES ---
+        const form = document.getElementById('fitnessForm');
+        const mainFormView = document.getElementById('mainFormView');
+        const detailsView = document.getElementById('detailsView');
+        const outputDiv = document.getElementById('workoutOutput');
+        const messageBox = document.getElementById('messageBox');
+        
+        // --- VIEW SWITCHING FUNCTIONS ---
+
+        function showListView() {
+            detailsView.classList.add('hidden');
+            mainFormView.classList.remove('hidden');
+        }
+
+        function showDetailsView() {
+            mainFormView.classList.add('hidden');
+            detailsView.classList.remove('hidden');
+        }
+
+        function showExerciseDetails(exerciseName) {
+            const detailData = exerciseDetails[exerciseName];
+            const detailTitle = document.getElementById('detailTitle');
+            const detailImage = document.getElementById('detailImage');
+            const detailSteps = document.getElementById('detailSteps');
+            const detailType = document.getElementById('detailType');
+
+            if (!detailData) {
+                showMessage(`No step-by-step details available for "${exerciseName}".`, 'error');
+                return;
+            }
+
+            // 1. Update Title and Type
+            detailTitle.textContent = `Exercise: ${exerciseName}`;
+            detailType.textContent = `Type: ${detailData.type}`;
+
+            // 2. Update Image/Icon Placeholder
+            detailImage.innerHTML = detailData.image;
+
+            // 3. Update Steps
+            let stepsHTML = '';
+            detailData.steps.forEach(step => {
+                stepsHTML += `<li class="pl-2">${step}</li>`;
+            });
+            detailSteps.innerHTML = stepsHTML;
+
+            // 4. Switch View
+            showDetailsView();
+        }
+
+        // --- UTILITY FUNCTIONS ---
+
+        function showMessage(message, type = 'error') {
+            messageBox.textContent = message;
+            messageBox.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-green-100', 'text-green-700');
+            
+            if (type === 'error') {
+                messageBox.classList.add('bg-red-100', 'text-red-700');
+            } else {
+                messageBox.classList.add('bg-green-100', 'text-green-700');
+            }
+
+            // Hide the message after 5 seconds
+            setTimeout(() => {
+                messageBox.classList.add('hidden');
+            }, 5000);
+        }
+
+        function calculateBMI(weightKg, heightCm) {
+            const heightM = heightCm / 100;
+            return weightKg / (heightM * heightM);
+        }
+
+        // --- MAIN WORKOUT GENERATION ---
+
+        function generateWorkout(event) {
+            event.preventDefault(); // Stop the form from submitting normally
+
+            // 1. Get user input values
+            const age = document.getElementById('age').value;
+            const weight = document.getElementById('weight').value;
+            const height = document.getElementById('height').value;
+            const gender = document.getElementById('gender').value;
+            const goal = document.getElementById('goal').value;
+
+            // Simple validation
+            if (!age || !weight || !height || !gender || !goal) {
+                showMessage("Please fill in all required fields to generate your workout.", 'error');
+                return;
+            }
+            
+            // 2. Select the corresponding workout plan
+            const plan = workoutPlans[goal];
+
+            if (!plan) {
+                showMessage("Sorry, the selected goal is not currently supported.", 'error');
+                return;
+            }
+
+            // 3. Render the workout plan to the output section
+            let workoutHTML = `
+                <div class="bg-white p-4 rounded-lg shadow-inner border border-primary-blue/30">
+                    <p class="text-xs font-bold text-primary-blue uppercase">GOAL: ${plan.title.split('(')[0].trim()}</p>
+                    <h3 class="text-xl font-bold mt-1 text-gray-900">${plan.title}</h3>
+                    <p class="text-sm text-gray-600 italic mt-1">${plan.description}</p>
+                </div>
+                <ul class="space-y-3">
+            `;
+
+            plan.exercises.forEach((exercise, index) => {
+                const hasDetails = exerciseDetails[exercise.name];
+                
+                workoutHTML += `
+                    <li class="p-3 bg-white rounded-lg border-l-4 border-primary-blue flex flex-col sm:flex-row justify-between items-start sm:items-center transition hover:shadow-md">
+                        <div class="flex-1 mb-2 sm:mb-0">
+                            <span class="text-sm font-semibold text-gray-800">${index + 1}. ${exercise.name}</span>
+                            <p class="text-xs text-gray-500">${exercise.sets} / ${exercise.reps}</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <p class="text-xs font-bold text-primary-blue mr-3 hidden sm:block">Sets: ${exercise.sets}, Reps: ${exercise.reps}</p>
+                            ${hasDetails ? 
+                                `<button onclick="showExerciseDetails('${exercise.name}')" 
+                                         class="text-xs font-medium text-white bg-primary-blue hover:bg-emerald-600 px-3 py-1 rounded-full transition duration-150 ease-in-out">
+                                    Show Steps
+                                </button>` 
+                                : 
+                                `<span class="text-xs text-gray-400 italic">No details</span>`
+                            }
+                        </div>
+                    </li>
+                `;
+            });
+
+            workoutHTML += `</ul>`;
+            
+            // Add a summary of personal details for context
+            const bmi = calculateBMI(parseFloat(weight), parseFloat(height));
+            workoutHTML += `
+                <div class="mt-6 pt-4 border-t border-gray-300">
+                    <h4 class="text-base font-semibold text-gray-800 mb-2">Your Profile Summary:</h4>
+                    <ul class="text-sm text-gray-600 space-y-1">
+                        <li><strong>Age:</strong> ${age} years</li>
+                        <li><strong>Gender:</strong> ${gender}</li>
+                        <li><strong>Weight:</strong> ${weight} kg</li>
+                        <li><strong>Height:</strong> ${height} cm</li>
+                        <li><strong>Estimated BMI:</strong> ${bmi.toFixed(1)}</li>
+                    </ul>
+                </div>
+            `;
+
+
+            outputDiv.innerHTML = workoutHTML;
+            showMessage("Workout plan generated successfully!", 'success');
+        }
+
+        // Attach event listener to the form
+        form.addEventListener('submit', generateWorkout);
+    </script>
+</body>
+</html>
