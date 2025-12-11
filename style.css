@@ -1,0 +1,14 @@
+/* Custom styles for better aesthetics */
+body {
+    background-color: #f7fafc;
+}
+.card-shadow {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+.view-transition {
+    transition: opacity 0.3s ease-in-out;
+}
+/* Ensure consistency for utility classes that might conflict with Tailwind's default application */
+.p-2\.5 {
+    padding: 0.625rem; /* Equivalent to p-2.5 in Tailwind's scale */
+}
